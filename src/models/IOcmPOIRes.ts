@@ -3,6 +3,6 @@ import { IOcmPOIDto } from "./IOcmPOIDto";
 import { ocmNullable } from "./ocmNullable";
 
 export interface IOcmPOIResDto {
-    stations: IOcmPOIDto[];
+    pois: IOcmPOIDto[];
     error: string;
 }

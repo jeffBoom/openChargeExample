@@ -13,14 +13,14 @@ class OcmPOIConnector {
             const resp: Response = await fetch(`${this.baseUrl}&latitude=${req.latitude}&longitude=${req.longitude}`);
 
             // Failure status code
-            if (resp.status !== 200) return { stations: [], error: 'Error fetching POIs.' };
+            if (resp.status !== 200) return { pois: [], error: 'Error fetching POIs.' };
 
             // Formulate DTO for resp
             const respBody: IOcmPOIDto[] = await resp.json();
-            const poiDto: IOcmPOIResDto = { stations: [], error: '' };
+            const poiDto: IOcmPOIResDto = { pois: [], error: '' };
             if (respBody.length > 0) {
                 for (const poi of respBody) {
-                    poiDto.stations.push({
+                    poiDto.pois.push({
                         id: poi.id,
                         addressInfo: poi.addressInfo,
                         usageType: poi.usageType,
@@ -31,7 +31,7 @@ class OcmPOIConnector {
             return poiDto;
         } catch (error) {
             return {
-                stations: [],
+                pois: [],
                 error: `Error fetching POIs : ${error}.`
             }
         }
