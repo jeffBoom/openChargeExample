@@ -41,7 +41,7 @@ function App(): JSX.Element {
 
   // Select a poi for charging
   const startChargingSession = useCallback(async (poi: IOcmPOIDto): Promise<void> => {
-    // I would noramlly store the response results and update the UI if it had failed/succeeded.
+    // I would normally store the response results and update the UI if it had failed/succeeded.
     // const resp: boolean = await ocmEvChargeConnector.startSession(currentPoi!);
     await ocmEvChargeConnector.startSession(currentPoi!);
 
