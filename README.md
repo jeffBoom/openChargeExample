@@ -65,6 +65,8 @@
 10. I would have added a 'distance' selector so the user could specify a range of miles (the Open Charge API has a distance property you can use).
 11. If I anticipated that a lot of results could come in, I'd probably introduce automatic paging into the FlatList (get more on scroll to end).
 12. I would have come up with a better overall design (button positioning, text styles, loading animations, etc).
+13. Tested on the Android emulator in addition to the iOS simulator.
+14. Tested on devices (not just simulators) for both iOS and Android (I have a few devices at home)
 
 <br />
 
