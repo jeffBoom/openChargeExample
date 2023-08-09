@@ -4,7 +4,7 @@ import { IOcmUsageType } from "./IOcmUsageType";
 import { ocmNullable } from "./ocmNullable";
 
 export interface IOcmPOIDto {
-    id: string,
+    id: number,
     addressInfo: IOcmPOIAddrInfo,
     usageType: ocmNullable<IOcmUsageType>,
     statusType: ocmNullable<IOcmStatusType>

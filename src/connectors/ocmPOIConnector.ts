@@ -10,7 +10,7 @@ class OcmPOIConnector {
     public async getPOI(req: IOcmPOIReq): Promise<IOcmPOIResDto> {
         try {
             // Fetch POIs
-            const resp: Response = await fetch(`${this.baseUrl}&latitude=${req.latitude}&longitude=${req.longitude}`);
+            const resp: Response = await fetch(`${this.baseUrl}&latitude=${req.latitude}&longitude=${req.longitude}`, { method: 'GET' });
 
             // Failure status code
             if (resp.status !== 200) return { pois: [], error: 'Error fetching POIs.' };

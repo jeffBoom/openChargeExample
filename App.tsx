@@ -10,6 +10,7 @@ import { IOcmPOIReq } from "./src/models/IOcmPOIReq";
 import { IOcmPOIDto } from "./src/models/IOcmPOIDto";
 import { OcmPoi } from "./src/components/ocmPoi/ocmPoi";
 import { IOcmPOIResDto } from "./src/models/IOcmPOIRes";
+import ocmEvChargeConnector from "./src/connectors/ocmEvChargeConnector";
 
 function App(): JSX.Element {
 
@@ -21,28 +22,48 @@ function App(): JSX.Element {
   const [hasSearchedOnce, setHasSearchedOnce] = useState<boolean>(false);
   const [currentPoi, setCurrentPoi] = useState<ocmNullable<IOcmPOIDto>>();
 
+  // Geolocation retrieved from device.
   const handleUserPosition = useCallback((position: GeolocationResponse): void => {
     setErrorMsg('');
     setUserLocation(position)
   }, []);
 
+  // Failed to get geolocation from device.
   const handleErrorGettingPosition = useCallback((error: GeolocationError): void => {
     setErrorMsg(`Couldn't get device location: ${error.message}.`);
   }, []);
 
-  // Get device location
+  // Get device location.
   const getGeoLocation = useCallback(async (): Promise<void> => {
     Geolocation.getCurrentPosition(handleUserPosition, handleErrorGettingPosition);
   }, []);
 
+
+  // Select a poi for charging
+  const startChargingSession = useCallback(async (poi: IOcmPOIDto): Promise<void> => {
+    if (!currentPoi) setErrorMsg('Must select a poi before starting a charging session.');
+
+    // I would noramlly store the response results and update the UI if it had failed/succeeded.
+    // const resp: boolean = await ocmEvChargeConnector.startSession(currentPoi!);
+    await ocmEvChargeConnector.startSession(currentPoi!);
+
+    // Just setting this for demo purposes, normally we would wait for a successful resp from the api.
+    setCurrentPoi(poi);
+    // if (!resp) setErrorMsg('We ran into an issue starting a charging session.');
+    // else setErrorMsg('');
+  }, []);
+
+  // Get a list of pois from the Open Charge API.
   const getPOIs = useCallback(async (): Promise<void> => {
     if (!hasSearchedOnce) setHasSearchedOnce(true);
     setIsLoading(true);
+    setErrorMsg('');
     const params: IOcmPOIReq = {
       latitude: userLocation!.coords.latitude,
       longitude: userLocation!.coords.longitude,
     }
     const resp: IOcmPOIResDto = await ocmPOIConnector.getPOI(params);
+    if (resp.error) setErrorMsg('');
     setPois(resp.pois);
     setIsLoading(false);
 
@@ -52,7 +73,7 @@ function App(): JSX.Element {
     <SafeAreaView style={{ flex: 1 }}>
 
       {/* BODY */}
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 12, gap: 12, }}>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 12, gap: 20, }}>
 
         {/* LOCATION */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, }}>
@@ -93,7 +114,7 @@ function App(): JSX.Element {
               :
               pois.length > 0 &&
               <View style={{ flex: 1, gap: 12, }}>
-                <Text>Tap on a station to learn more!</Text>
+                <Text style={{ textAlign: 'center' }}>Tap on a station to learn more!</Text>
                 <Text style={{ fontSize: 12, color: ocmColors.greyText }}>Results:</Text>
                 <FlatList
                   style={{ flex: 1 }}
@@ -103,11 +124,11 @@ function App(): JSX.Element {
                       <OcmPoi
                         isChargingHere={currentPoi === params.item}
                         poi={params.item}
-                        onSelectForCharge={() => { setCurrentPoi(params.item) }}
+                        onSelectForCharge={async () => { await startChargingSession(params.item) }}
                       />
                     )
                   }}
-                  keyExtractor={(item: IOcmPOIDto) => item.id}
+                  keyExtractor={(item: IOcmPOIDto) => item.id.toString()}
                 />
               </View>
         }
