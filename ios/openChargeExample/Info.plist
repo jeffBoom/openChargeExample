@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- USED FOR GEOLOCATION LOOOKUP -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We only use your location to find local charging stations.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We only use your location to find local charging stations.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We only use your location to find local charging stations.</string>
+	<!-- USED FOR GEOLOCATION LOOOKUP -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
