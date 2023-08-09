@@ -5,6 +5,8 @@ import Geolocation, { GeolocationResponse } from "@react-native-community/geoloc
 import ocmStringUtils from "./src/utils/ocmStringUtils";
 import ocmColors from "./src/styles/ocmColors";
 import { ocmNullable } from "./src/models/ocmNullable";
+import ocmPOIConnector from "./src/connectors/ocmPOIConnector";
+import { IOcmPOIReq } from "./src/models/IOcmPOIReq";
 
 function App(): JSX.Element {
 
@@ -16,6 +18,15 @@ function App(): JSX.Element {
       setUserLocation(position);
     });
   }, []);
+
+  const getPOIs = useCallback(async (): Promise<void> => {
+    const params: IOcmPOIReq = {
+      latitude: userLocation!.coords.latitude,
+      longitude: userLocation!.coords.longitude,
+    }
+    const resp = await ocmPOIConnector.getPOI(params);
+    console.log('resp', resp);
+  }, [userLocation]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -43,6 +54,11 @@ function App(): JSX.Element {
         </View>
 
         {/* RESULTS */}
+        <OcmPressable
+          onPress={getPOIs}
+          isDisabled={false}
+          text={ocmStringUtils.getLocation}
+        />
 
       </View>
     </SafeAreaView>

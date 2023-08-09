@@ -1,3 +1,4 @@
+import { IOcmPOIDto } from "../models/IOcmPOIDto";
 import { IOcmPOIReq } from "../models/IOcmPOIReq";
 import { IOcmPOIResDto } from "../models/IOcmPOIRes";
 
@@ -8,14 +9,27 @@ class OcmPOIConnector {
 
     public async getPOI(req: IOcmPOIReq): Promise<IOcmPOIResDto> {
         try {
-            const resp: Response = await fetch(`${this.baseUrl}&latitude=${req.latitude}&${req.longitude}`);
-            if (resp.status !== 200) return { stations: [], error: 'Error fetching POIs.' };
+            // Fetch POIs
+            const resp: Response = await fetch(`${this.baseUrl}&latitude=${req.latitude}&longitude=${req.longitude}`);
 
-            console.log('resp', resp);
-            return {
-                stations: [],
-                error: '',
+            // Failure status code
+            if (resp.status !== 200) return { stations: [], error: 'Error fetching POIs.' };
+            console.log('resp', await resp.json());
+
+            // Formulate DTO for resp
+            const respBody: IOcmPOIDto[] = await resp.json();
+            const poiDto: IOcmPOIResDto = { stations: [], error: '' };
+            if (respBody.length > 0) {
+                for (const poi of respBody) {
+                    poiDto.stations.push({
+                        id: poi.id,
+                        addressInfo: poi.addressInfo,
+                        usageType: poi.usageType,
+                        statusType: poi.statusType,
+                    });
+                }
             }
+            return poiDto;
         } catch (error) {
             return {
                 stations: [],
