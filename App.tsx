@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { Pressable, SafeAreaView, Text, View } from "react-native";
 import { OcmPressable } from "./src/components/ocmPressable/ocmPressable";
-import Geolocation, { GeolocationResponse } from "@react-native-community/geolocation";
+import Geolocation, { GeolocationError, GeolocationResponse } from "@react-native-community/geolocation";
 import ocmStringUtils from "./src/utils/ocmStringUtils";
 import ocmColors from "./src/styles/ocmColors";
 import { ocmNullable } from "./src/models/ocmNullable";
@@ -10,13 +10,22 @@ import { IOcmPOIReq } from "./src/models/IOcmPOIReq";
 
 function App(): JSX.Element {
 
+  // Local State
   const [userLocation, setUserLocation] = useState<ocmNullable<GeolocationResponse>>();
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
+  const handleUserPosition = useCallback((position: GeolocationResponse): void => {
+    setErrorMsg('');
+    setUserLocation(position)
+  }, []);
+
+  const handleErrorGettingPosition = useCallback((error: GeolocationError): void => {
+    setErrorMsg(`Couldn't get device location: ${error.message}.`);
+  }, []);
+
+  // Get device location
   const getGeoLocation = useCallback(async (): Promise<void> => {
-    Geolocation.getCurrentPosition((position: GeolocationResponse) => {
-      console.log('user position', position);
-      setUserLocation(position);
-    });
+    Geolocation.getCurrentPosition(handleUserPosition, handleErrorGettingPosition);
   }, []);
 
   const getPOIs = useCallback(async (): Promise<void> => {
@@ -25,7 +34,7 @@ function App(): JSX.Element {
       longitude: userLocation!.coords.longitude,
     }
     const resp = await ocmPOIConnector.getPOI(params);
-    console.log('resp', resp);
+    console.log('resp', JSON.stringify(resp));
   }, [userLocation]);
 
   return (

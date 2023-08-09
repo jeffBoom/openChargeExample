@@ -5,7 +5,7 @@ import { IOcmPOIResDto } from "../models/IOcmPOIRes";
 class OcmPOIConnector {
 
     private key: string = 'cfa93c10-ad4c-4128-9ab4-a66191f70d12';
-    private baseUrl: string = `https://api.openchargemap.io/v3/poi?key=${this.key}`;
+    private baseUrl: string = `https://api.openchargemap.io/v3/poi?key=${this.key}&camelCase=true`;
 
     public async getPOI(req: IOcmPOIReq): Promise<IOcmPOIResDto> {
         try {
@@ -14,7 +14,6 @@ class OcmPOIConnector {
 
             // Failure status code
             if (resp.status !== 200) return { stations: [], error: 'Error fetching POIs.' };
-            console.log('resp', await resp.json());
 
             // Formulate DTO for resp
             const respBody: IOcmPOIDto[] = await resp.json();
