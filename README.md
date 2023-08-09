@@ -1,5 +1,5 @@
 # 📺 Video of the Solution
-### Here's a [link to the video](https://vimeo.com/853142145) of the finished app.
+### Here's a [link to the video](https://vimeo.com/853142145) of the finished solution.
 
 <br />
 
