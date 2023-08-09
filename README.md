@@ -56,6 +56,7 @@
 
 
 <br />
+<br />
 
 # 🚀 If I had more time I would...
 1. I would have researched the type definitions for the Open Charge API, as I'm guessing someone has created definitions for the request/responses (ex: DefinitelyTyped).
