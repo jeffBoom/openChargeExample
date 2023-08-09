@@ -11,7 +11,7 @@
 3. Figure out what parameters the API would need for limiting the results to a specific location, turns out its latitude/longitude.
 4. Send a few responses with my home latitude/longitude (used Thunder Client which is like Postman).
 5. Read through the POI schema to identify fields that would be useful for the user.
-   - AdressInfo
+   - AddressInfo
    - UsageType
    - StatusType
 
@@ -21,7 +21,7 @@
 
 
 ### App Architectural Design
-1. I would normally spend more time here but because this was just a small demo, I just wrote down some thoughts the project structure and components I thought I would need:
+1. I would normally spend more time here but because this was just a small demo, I just wrote down some thoughts on the project structure and components I thought I would need:
    - Components
       - Button component for various actions (get location, start charging).
       - POI result component
@@ -72,7 +72,8 @@
 11. If I anticipated that a lot of results could come in, I'd probably introduce automatic paging into the FlatList (get more on scroll to end).
 12. I would have come up with a better overall design (button positioning, text styles, loading animations, etc).
 13. Tested on the Android emulator in addition to the iOS simulator.
-14. Tested on devices (not just simulators) for both iOS and Android (I have a few devices at home)
+14. Tested on devices (not just simulators) for both iOS and Android (I have a few devices at home).
+15. I would have built a web service with an end point for the Open Graph lookup so that I wouldn't have to store API keys client side (store them as env variables on the server).
 
 <br />
 
