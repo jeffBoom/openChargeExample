@@ -1,18 +1,11 @@
 import { IOcmPOIAddrInfo } from "./IOcmPOIAddrInfo";
+import { IOcmStatusType } from "./IOcmStatusType";
+import { IOcmUsageType } from "./IOcmUsageType";
 import { ocmNullable } from "./ocmNullable";
 
 export interface IOcmPOIDto {
     id: string,
     addressInfo: IOcmPOIAddrInfo,
-    usageType: {
-        isPayAtLocation: ocmNullable<boolean>,
-        isMembershipRequired: ocmNullable<boolean>,
-        title: 'string',
-    },
-    statusType: {
-        id: number,
-        isOperational: ocmNullable<boolean>,
-        isUserSelectable: ocmNullable<boolean>,
-        title: string,
-    }
+    usageType: ocmNullable<IOcmUsageType>,
+    statusType: ocmNullable<IOcmStatusType>
 }

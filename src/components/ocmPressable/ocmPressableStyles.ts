@@ -6,6 +6,7 @@ export default StyleSheet.create({
         padding: 12,
         borderRadius: 12,
         backgroundColor: ocmColors.fg,
+        alignItems: 'center',
     },
     btnText: {
         color: ocmColors.bg,

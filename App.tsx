@@ -19,6 +19,7 @@ function App(): JSX.Element {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pois, setPois] = useState<IOcmPOIDto[]>([]);
   const [hasSearchedOnce, setHasSearchedOnce] = useState<boolean>(false);
+  const [currentPoi, setCurrentPoi] = useState<ocmNullable<IOcmPOIDto>>();
 
   const handleUserPosition = useCallback((position: GeolocationResponse): void => {
     setErrorMsg('');
@@ -42,7 +43,6 @@ function App(): JSX.Element {
       longitude: userLocation!.coords.longitude,
     }
     const resp: IOcmPOIResDto = await ocmPOIConnector.getPOI(params);
-    console.log('pois ', resp.pois[0]);
     setPois(resp.pois);
     setIsLoading(false);
 
@@ -91,12 +91,25 @@ function App(): JSX.Element {
             pois.length === 0 && hasSearchedOnce && !isLoading ?
               <Text>Hm, there doesn't appear to be POIs near you.</Text>
               :
-              <FlatList
-                style={{ flex: 1 }}
-                data={pois}
-                renderItem={(params: ListRenderItemInfo<IOcmPOIDto>) => <OcmPoi {...params.item} />}
-                keyExtractor={(item: IOcmPOIDto) => item.id}
-              />
+              pois.length > 0 &&
+              <View style={{ flex: 1, gap: 12, }}>
+                <Text>Tap on a station to learn more!</Text>
+                <Text style={{ fontSize: 12, color: ocmColors.greyText }}>Results:</Text>
+                <FlatList
+                  style={{ flex: 1 }}
+                  data={pois}
+                  renderItem={(params: ListRenderItemInfo<IOcmPOIDto>) => {
+                    return (
+                      <OcmPoi
+                        isChargingHere={currentPoi === params.item}
+                        poi={params.item}
+                        onSelectForCharge={() => { setCurrentPoi(params.item) }}
+                      />
+                    )
+                  }}
+                  keyExtractor={(item: IOcmPOIDto) => item.id}
+                />
+              </View>
         }
 
       </View>
