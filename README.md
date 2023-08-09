@@ -74,6 +74,7 @@
 13. Tested on the Android emulator in addition to the iOS simulator.
 14. Tested on devices (not just simulators) for both iOS and Android (I have a few devices at home).
 15. I would have built a web service with an end point for the Open Graph lookup so that I wouldn't have to store API keys client side (store them as env variables on the server).
+16. I would have written more meaningful commit messages.
 
 <br />
 
