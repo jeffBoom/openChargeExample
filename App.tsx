@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { FlatList, ListRenderItemInfo, Pressable, SafeAreaView, Text, View } from "react-native";
 import { OcmPressable } from "./src/components/ocmPressable/ocmPressable";
 import Geolocation, { GeolocationError, GeolocationResponse } from "@react-native-community/geolocation";
@@ -41,17 +41,43 @@ function App(): JSX.Element {
 
   // Select a poi for charging
   const startChargingSession = useCallback(async (poi: IOcmPOIDto): Promise<void> => {
-    if (!currentPoi) setErrorMsg('Must select a poi before starting a charging session.');
-
     // I would noramlly store the response results and update the UI if it had failed/succeeded.
     // const resp: boolean = await ocmEvChargeConnector.startSession(currentPoi!);
     await ocmEvChargeConnector.startSession(currentPoi!);
 
     // Just setting this for demo purposes, normally we would wait for a successful resp from the api.
-    setCurrentPoi(poi);
+    if (poi !== currentPoi) setCurrentPoi(poi);
+    else setCurrentPoi(null);
     // if (!resp) setErrorMsg('We ran into an issue starting a charging session.');
     // else setErrorMsg('');
-  }, []);
+  }, [currentPoi]);
+
+  const getResults = useCallback((): React.JSX.Element => {
+    if (isLoading) return <Text>Loading...</Text>;
+    if (errorMsg) return <Text style={{ color: ocmColors.red }}>{errorMsg}</Text>;
+    if (pois.length === 0 && hasSearchedOnce && !isLoading) return <Text>Hm, there doesn't appear to be POIs near you.</Text>;
+    if (pois.length > 0) return (
+      <View style={{ flex: 1, gap: 12, }}>
+        <Text style={{ textAlign: 'center' }}>Tap on a station to learn more!</Text>
+        <Text style={{ fontSize: 12, color: ocmColors.greyText }}>Results:</Text>
+        <FlatList
+          style={{ flex: 1 }}
+          data={pois}
+          renderItem={(params: ListRenderItemInfo<IOcmPOIDto>) => {
+            return (
+              <OcmPoi
+                isChargingHere={currentPoi === params.item}
+                poi={params.item}
+                onSelectForCharge={async () => { await startChargingSession(params.item) }}
+              />
+            )
+          }}
+          keyExtractor={(item: IOcmPOIDto) => item.id.toString()}
+        />
+      </View>
+    )
+    else return <></>;
+  }, [isLoading, hasSearchedOnce, errorMsg, pois, currentPoi]);
 
   // Get a list of pois from the Open Charge API.
   const getPOIs = useCallback(async (): Promise<void> => {
@@ -103,35 +129,8 @@ function App(): JSX.Element {
           />
         }
 
-        {isLoading ?
-          <Text>Loading...</Text>
-          :
-          errorMsg ?
-            <Text>{errorMsg}</Text>
-            :
-            pois.length === 0 && hasSearchedOnce && !isLoading ?
-              <Text>Hm, there doesn't appear to be POIs near you.</Text>
-              :
-              pois.length > 0 &&
-              <View style={{ flex: 1, gap: 12, }}>
-                <Text style={{ textAlign: 'center' }}>Tap on a station to learn more!</Text>
-                <Text style={{ fontSize: 12, color: ocmColors.greyText }}>Results:</Text>
-                <FlatList
-                  style={{ flex: 1 }}
-                  data={pois}
-                  renderItem={(params: ListRenderItemInfo<IOcmPOIDto>) => {
-                    return (
-                      <OcmPoi
-                        isChargingHere={currentPoi === params.item}
-                        poi={params.item}
-                        onSelectForCharge={async () => { await startChargingSession(params.item) }}
-                      />
-                    )
-                  }}
-                  keyExtractor={(item: IOcmPOIDto) => item.id.toString()}
-                />
-              </View>
-        }
+        {/* POI RESULTS */}
+        {getResults()}
 
       </View>
     </SafeAreaView>

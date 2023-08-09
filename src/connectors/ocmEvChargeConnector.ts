@@ -6,7 +6,7 @@ class OcmEvChargeConnector {
 
     public async startSession(poi: IOcmPOIDto): Promise<boolean> {
         try {
-            // Construct the body from the poi param.
+            // Construct the body from the poi param
             const body: IOcmEvChargeReq = {
                 user: 1,
                 car_id: 1,
@@ -18,7 +18,8 @@ class OcmEvChargeConnector {
                 method: 'POST',
                 body: JSON.stringify(body),
             });
-            // Just using a simple response for testing.
+
+            // Just using a simple boolean response for testing
             // Normally I would have an HttpResp class with status code, and getters like "isError".
             if (resp.status !== 200) return false;
             return true;

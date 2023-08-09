@@ -14,13 +14,17 @@ export interface IOcmPoiProps {
 
 export function OcmPoi(props: IOcmPoiProps): React.JSX.Element {
 
+    // Local State
     const [isDetails, setIsDetails] = useState<boolean>(false);
+
+    // Status icon and text
     const statusText: string = useMemo(() => {
         if (!props.poi.statusType) return '❓ Unknown';
         if (props.poi.statusType.isOperational) return '🔋 Operational';
         return '🪫 Not Available';
     }, [props.poi.statusType]);
 
+    // Membership icon and text
     const membershipText: string = useMemo(() => {
         if (!props.poi.usageType) return '❓ Unknown';
         if (props.poi.usageType.isMembershipRequired) return '🎟️ Private';
