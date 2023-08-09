@@ -4,10 +4,11 @@ import { OcmPressable } from "./src/components/ocmPressable/ocmPressable";
 import Geolocation, { GeolocationResponse } from "@react-native-community/geolocation";
 import ocmStringUtils from "./src/utils/ocmStringUtils";
 import ocmColors from "./src/styles/ocmColors";
+import { ocmNullable } from "./src/models/ocmNullable";
 
 function App(): JSX.Element {
 
-  const [userLocation, setUserLocation] = useState<GeolocationResponse | null>();
+  const [userLocation, setUserLocation] = useState<ocmNullable<GeolocationResponse>>();
 
   const getGeoLocation = useCallback(async (): Promise<void> => {
     Geolocation.getCurrentPosition((position: GeolocationResponse) => {
@@ -22,17 +23,17 @@ function App(): JSX.Element {
       {/* BODY */}
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', padding: 12 }}>
 
-        {/* SEARCH */}
+        {/* LOCATION */}
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, }}>
 
-          {/* LOCATION */}
+          {/* CURRENT LOCATION */}
           {userLocation ?
             <Text style={{ flex: 1 }}>✅ Lat: {userLocation?.coords.latitude} / Long: {userLocation?.coords.longitude}</Text>
             :
             <Text style={{ flex: 1, color: ocmColors.greyText }}>Tap "{ocmStringUtils.getLocation}" then restrict the distance.</Text>
           }
 
-          {/* BTN FOR RETRIEVING LOCATION */}
+          {/* BTN FOR GETTING LOCATION*/}
           <OcmPressable
             onPress={getGeoLocation}
             isDisabled={false}
@@ -40,6 +41,8 @@ function App(): JSX.Element {
           />
 
         </View>
+
+        {/* RESULTS */}
 
       </View>
     </SafeAreaView>
